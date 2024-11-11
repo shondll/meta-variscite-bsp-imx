@@ -80,11 +80,49 @@ help() {
     exit
 }
 
+get_somrev() {
+	# Get the raw output
+	raw_output=$(i2cget -f -y 0x0 0x52 0x1e)
+
+	# Convert the output to decimal
+	decimal_output=$(( $raw_output ))
+
+	# Extract major and minor versions
+	major=$(( ($decimal_output & 0xE0) >> 5 ))
+	minor=$(( $decimal_output & 0x1F ))
+
+	# Adjust the major version as per the specification
+	major=$(( $major + 1 ))
+
+	echo "$major.$minor"
+}
+
 # Initialize default Linux Device Tree
 if [ "${MACHINE#*DART-MX*}" != "${MACHINE}" ]; then
-    readonly CM_DTB=${CM_DTB_DART}
+    CM_DTB=${CM_DTB_DART}
+    somrev=$(get_somrev)
+
+    if [ "$(echo "$somrev < 2.0" | bc)" -eq 1 ]; then
+        case "${MACHINE}" in 
+            *DART-MX8M-PLUS*)
+                CM_DTB=${CM_DTB_DART_1X}
+                ;;
+            *DART-MX8M-MINI*)
+                CM_DTB=${CM_DTB_DART_1X}
+                ;;
+        esac
+    fi
 elif [ "${MACHINE#*VAR-SOM*}" != "${MACHINE}" ]; then
-    readonly CM_DTB=${CM_DTB_SOM}
+    CM_DTB=${CM_DTB_SOM}
+    somrev=$(get_somrev)
+
+    if [ "$(echo "$somrev < 2.0" | bc)" -eq 1 ]; then
+        case "$MACHINE" in
+            *VAR-SOM-MX8M-PLUS*)
+                CM_DTB=${CM_DTB_SOM_1X}
+                ;;
+        esac
+    fi
 elif [ "${MACHINE#*SPEAR-MX8*}" != "${MACHINE}" ]; then
     readonly CM_DTB=${CM_DTB_SPEAR}
 else
