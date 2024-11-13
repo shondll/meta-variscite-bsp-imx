@@ -6,6 +6,10 @@ SUMMARY = "U-Boot for Variscite's i.MX boards"
 require recipes-bsp/u-boot/u-boot.inc
 
 PROVIDES += "u-boot"
+
+# this is needed because of the appended suffix of the u-boot-variscite recipe
+RPROVIDES:${PN} = "u-boot-env"
+
 DEPENDS += "bison-native bc-native dtc-native gnutls-native"
 FILESEXTRAPATHS:prepend := "${THISDIR}/u-boot-fw-utils:"
 
