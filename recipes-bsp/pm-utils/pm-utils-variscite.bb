@@ -15,8 +15,6 @@ SRC_URI = " \
 	file://03-wifi.sh \
 "
 
-S = "${WORKDIR}"
-
 do_install() {
 	install -d ${D}/${sysconfdir}/pm/sleep.d
 	install -m 0755 ${WORKDIR}/00-ot.sh ${D}/${sysconfdir}/pm/sleep.d
