@@ -18,8 +18,6 @@ FILES:${PN} = " \
 
 RDEPENDS:${PN}:append = " bash base-files"
 
-S = "${WORKDIR}"
-
 do_install() {
 
 	install -d ${D}${sysconfdir}/bluetooth
