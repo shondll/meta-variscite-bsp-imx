@@ -1,0 +1,69 @@
+From f6de404b9ea10d815f40ba64b2b06302a25c3c56 Mon Sep 17 00:00:00 2001
+From: Nate Drude <nate.d@variscite.com>
+Date: Wed, 20 Nov 2024 18:21:28 +0000
+Subject: [PATCH 3/3] video: imx8mp_lvds: Add support for LVDS Channel 1
+
+The driver currently hardcodes the LVDS channel to channel 0.
+This patch hardcodes it to channel 1.
+
+Tested on imx8mp-var-som-symphony by changing
+lvds-channel0 to lvds-channel@1 and moving the
+display cable from J7 to J5.
+
+Signed-off-by: Nate Drude <nate.d@variscite.com>
+---
+ drivers/video/nxp/imx/imx8mp_lvds.c | 17 ++++++++++++++---
+ 1 file changed, 14 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/video/nxp/imx/imx8mp_lvds.c b/drivers/video/nxp/imx/imx8mp_lvds.c
+index a8218943bee..3a6bb593f6e 100644
+--- a/drivers/video/nxp/imx/imx8mp_lvds.c
++++ b/drivers/video/nxp/imx/imx8mp_lvds.c
+@@ -45,7 +45,7 @@
+ #define PRE_EMPH_EN		BIT(4)
+ #define HS_EN			BIT(3)
+ #define BG_EN			BIT(2)
+-#define CH_EN		    BIT(0)
++#define CH_EN		    BIT(1)
+ 
+ 
+ #define LDB_CTRL		0x5c
+@@ -57,6 +57,8 @@
+ #define LDB_CH1_MODE_EN_MASK		(3 << 2)
+ #define CH0_DATA_WIDTH_24BIT		(1 << 5)
+ #define CH0_BIT_MAPPING_JEIDA		(1 << 6)
++#define CH1_DATA_WIDTH_24BIT		(1 << 7)
++#define CH1_BIT_MAPPING_JEIDA		(1 << 8)
+ #define CH0_BIT_MAPPING_SPWG		(0 << 6)
+ #define LDB_REG_CH0_FIFO_RESET		(1 << 11)
+ #define LDB_REG_CH1_FIFO_RESET		(1 << 12)
+@@ -117,7 +119,7 @@ static int imx8mp_lvds_phy_power_on(struct udevice *dev)
+ 	val |= BIT(3);
+ 	media_blk_write(priv, LVDS_CTRL, val);
+ 
+-	media_blk_write(priv, LDB_CTRL, LDB_CH0_MODE_EN_TO_DI0 | CH0_DATA_WIDTH_24BIT | CH0_BIT_MAPPING_JEIDA);
++	media_blk_write(priv, LDB_CTRL, LDB_CH1_MODE_EN_TO_DI0 | CH1_DATA_WIDTH_24BIT | CH1_BIT_MAPPING_JEIDA);
+ 
+ 	usleep_range(5, 10);
+ 
+@@ -218,7 +220,16 @@ static int imx8mp_ldb_bind(struct udevice *dev)
+ 		ret = device_bind(dev, dev->driver, "lvds-channel@0", (void *)1,
+ 			lvds_ch_node, NULL);
+ 		if (ret)
+-			debug("Error binding driver '%s': %d\n", dev->driver->name,
++			printf("Error binding driver '%s': %d\n", dev->driver->name,
++				ret);
++	}
++
++	lvds_ch_node = ofnode_find_subnode(dev_ofnode(dev), "lvds-channel@1");
++	if (ofnode_valid(lvds_ch_node)) {
++		ret = device_bind(dev, dev->driver, "lvds-channel@1", (void *)1,
++			lvds_ch_node, NULL);
++		if (ret)
++			printf("Error binding driver '%s': %d\n", dev->driver->name,
+ 				ret);
+ 	}
+ 
+-- 
+2.43.0
+

@@ -1,7 +1,7 @@
 From 2152fcbdf5e0c4bf97621365a8c8828d47d585aa Mon Sep 17 00:00:00 2001
 From: Nate Drude <nate.d@variscite.com>
 Date: Thu, 7 Nov 2024 22:30:24 +0000
-Subject: [PATCH 2/2] imx8mp_var_dart: Add support for LVDS
+Subject: [PATCH 2/3] imx8mp_var_dart: Add support for LVDS
 
 Requires first the following patch from: https://community.nxp.com/t5/i-MX-Processors-Knowledge-Base/Add-i-MX8MP-LVDS-driver-in-uboot/ta-p/1434826
 
