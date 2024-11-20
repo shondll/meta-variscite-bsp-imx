@@ -98,11 +98,6 @@ IMAGE_INSTALL:append:mx9-nxp-bsp = " \
 
 IMAGE_FSTYPES = "tar.zst wic.zst"
 
-# Wayland based distros add systemd to DISTRO_FEATURES
-# Remove sysvinit or systemd based on DISTRO_FEATURES to avoid conflicts
-DISTRO_FEATURES_BACKFILL_CONSIDERED:append = "${@bb.utils.contains('DISTRO_FEATURES', 'systemd', ' sysvinit', '', d)}"
-DISTRO_FEATURES_BACKFILL_CONSIDERED:append = "${@bb.utils.contains('DISTRO_FEATURES', 'sysvinit', ' systemd', '', d)}"
-
 # Use bluez-alsa instead of pulseaudio
 DISTRO_FEATURES_BACKFILL_CONSIDERED:append = " pulseaudio"
 
