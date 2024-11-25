@@ -35,6 +35,34 @@ do_compile:var-som() {
         cp ${DEPLOY_DIR_IMAGE}/${OEI_NAME}               ${BOOT_STAGING}
     fi
 
+    # workaround: make UBOOT_CONFIG_EXTRA equal to UBOOT_CONFIG if UBOOT_CONFIG_EXTRA is not set
+    if [ -z "${UBOOT_CONFIG_EXTRA}" ]; then
+        UBOOT_CONFIG_EXTRA=${UBOOT_CONFIG}
+    fi
+    bbnote "UBOOT_CONFIG=${UBOOT_CONFIG}"
+    bbnote "UBOOT_CONFIG_EXTRA=${UBOOT_CONFIG_EXTRA}"
+
+    # workaround: make UBOOT_DTB_NAME_EXTRA equal to UBOOT_DTB_NAME if UBOOT_DTB_NAME_EXTRA is not set
+    if [ -z "${UBOOT_DTB_NAME_EXTRA}" ]; then
+        UBOOT_DTB_NAME_EXTRA=${UBOOT_DTB_NAME}
+    fi
+    bbnote "UBOOT_DTB_NAME=${UBOOT_DTB_NAME}"
+    bbnote "UBOOT_DTB_NAME_EXTRA=${UBOOT_DTB_NAME_EXTRA}"
+
+    # workaround: make UBOOT_NAME_EXTRA equal to UBOOT_NAME if UBOOT_NAME_EXTRA is not set
+    if [ -z "${UBOOT_NAME_EXTRA}" ]; then
+        UBOOT_NAME_EXTRA=${UBOOT_NAME}
+    fi
+    bbnote "UBOOT_NAME=${UBOOT_NAME}"
+    bbnote "UBOOT_NAME_EXTRA=${UBOOT_NAME_EXTRA}"
+
+    # workaround: make BOOT_CONFIG_MACHINE_EXTRA equal to BOOT_CONFIG_MACHINE if BOOT_CONFIG_MACHINE_EXTRA is not set
+    if [ -z "${BOOT_CONFIG_MACHINE_EXTRA}" ]; then
+        BOOT_CONFIG_MACHINE_EXTRA=${BOOT_CONFIG_MACHINE}
+    fi
+    bbnote "BOOT_CONFIG_MACHINE=${BOOT_CONFIG_MACHINE}"
+    bbnote "BOOT_CONFIG_MACHINE_EXTRA=${BOOT_CONFIG_MACHINE_EXTRA}"
+
     for target in ${IMXBOOT_TARGETS}; do
         compile_${SOC_FAMILY}
         case $target in
